@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32"
+    href="./images/favicon-32x32.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;700&display=swap"
+    rel="stylesheet">
+
+  <title>Interactive Rating Component</title>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    img {
+      display: block;
+      font-size: 0;
+    }
+
+    :root {
+      /* COLORS */
+      --primary-orange: hsl(25, 97%, 53%);
+      --primary-orange-disabled: hsl(25, 97%, 33%);
+
+      --neutral-white: hsl(0, 0%, 100%);
+      --neutral-lightGray: hsl(217, 12%, 63%);
+      --neutral-mediumGray: hsl(216, 12%, 54%);
+      --neutral-darkBlue: hsl(213, 19%, 18%);
+      --neutral-veryDarkBlue: hsl(216, 12%, 8%);
+      --fix-color: hsl(213, 19%, 28%);
+
+      /* FONTS */
+      --ff-overpass: 'Overpass', sans-serif;
+
+      /* TYPE */
+      --step--1: clamp(0.83rem, calc(0.79rem + 0.24vw), 1.00rem);
+      --step-0: clamp(1.00rem, calc(0.93rem + 0.36vw), 1.25rem);
+      --step-2: clamp(1.44rem, calc(1.29rem + 0.73vw), 1.95rem);
+
+
+      /* SPACE */
+      --space-3xs: clamp(0.25rem, calc(0.23rem + 0.09vw), 0.31rem);
+      --space-2xs: clamp(0.50rem, calc(0.46rem + 0.18vw), 0.63rem);
+      --space-s: clamp(1.00rem, calc(0.93rem + 0.36vw), 1.25rem);
+      --space-m: clamp(1.50rem, calc(1.39rem + 0.54vw), 1.88rem);
+
+      --space-3xl: clamp(6.00rem, calc(5.57rem + 2.14vw), 7.50rem);
+
+
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    main {
+      display: grid;
+      place-items: center;
+
+      min-height: 100vh;
+      background-color: var(--neutral-veryDarkBlue);
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      /* width: calc( var(--space-3xl) * 2.75 ); */
+      width: clamp(320px, 320px + 5vw, 40vw);
+
+      background-color: var(--neutral-darkBlue);
+      outline: 2px solid black;
+
+      padding-block: var(--space-s);
+      padding-inline: var(--space-m);
+
+      border-radius: var(--space-m);
+      font-family: var(--ff-overpass);
+
+    }
+
+    .star {
+      display: grid;
+      place-items: center;
+
+      width: calc(var(--space-m) * 1.5);
+      height: calc(var(--space-m) * 1.5);
+      border-radius: 50%;
+
+      margin-block-end: var(--space-m);
+
+      background-color: var(--fix-color);
+    }
+
+    .question {
+      margin-block-end: var(--space-s);
+
+      color: var(--neutral-white);
+      font-size: var(--step-2);
+    }
+
+    .question-description {
+      color: var(--neutral-lightGray);
+      margin-block-end: var(--space-m);
+      line-height: 1.5;
+
+      font-size: var(--step-0);
+    }
+
+    .rating-container {
+      display: flex;
+      justify-content: space-between;
+
+      border: none;
+
+      margin-block-end: var(--space-m);
+    }
+
+    .rating {
+      position: relative;
+
+      width: calc(var(--space-m) * 1.5);
+      height: calc(var(--space-m) * 1.5);
+
+      text-align: center;
+      line-height: calc(var(--space-m) * 1.5);
+      cursor: pointer;
+
+      border-radius: 50%;
+
+      color: var(--neutral-lightGray);
+      background-color: var(--fix-color);
+
+      font-size: var(--step-0);
+    }
+
+    .rating:hover {
+      background-color: var(--neutral-lightGray);
+      color: var(--neutral-white);
+    }
+
+    .rating:focus {
+      background-color: var(--neutral-lightGray);
+      color: var(--neutral-white);
+
+      outline: 2px solid var(--neutral-white);
+      outline-offset: var(--space-3xs);
+    }
+
+    .rating:focus-within {
+      background-color: var(--neutral-lightGray);
+      color: var(--neutral-white);
+
+      outline: 2px solid var(--neutral-white);
+      outline-offset: var(--space-3xs);
+    }
+
+
+    .rating:has(>input[type="radio"]:checked) {
+      background-color: var(--primary-orange);
+      color: var(--neutral-white);
+    }
+
+    .rating.radioButtonChecked {
+      background-color: var(--primary-orange);
+      color: var(--neutral-white);
+    }
+
+    .submit {
+      padding-block: var(--space-2xs);
+      border: none;
+      border-radius: var(--space-s);
+      letter-spacing: var(--space-3xs);
+      cursor: pointer;
+
+      background-color: var(--primary-orange);
+      color: var(--neutral-white);
+
+      font-family: var(--ff-overpass);
+      font-size: var(--step--1);
+    }
+
+    .submit:not([disabled]):hover {
+      background-color: var(--neutral-white);
+      color: var(--primary-orange);
+    }
+
+    .submit:focus-visible {
+      outline: 2px solid var(--neutral-white);
+      outline-offset: var(--space-3xs);
+    }
+
+    .submit:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .thank-you-image {
+      width: 50%;
+
+      margin-inline: auto;
+      margin-block-end: var(--space-m);
+    }
+
+    .extra-padding {
+      padding-block: calc( var(--space-m) * 1.5 );
+    }
+    
+    .center {
+      text-align: center;
+    }
+
+    .rating-result {
+      align-self: center;
+      
+      padding-block: var(--space-2xs);
+      padding-inline: var(--space-s);
+      margin-block-end: var(--space-m);
+      
+      background-color: var(--fix-color);
+      color: var(--primary-orange);
+      
+      border-radius: var(--space-m);
+
+      font-size: var(--step-0);
+    }
+
+    .no-bottom-margin {
+      margin-block-end: 0;
+    }
+
+
+    .visually-hidden {
+      position: absolute;
+      border: 0;
+      inset: 0;
+      width: 1;
+      height: 1;
+      padding: 0;
+      margin: 0;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      word-wrap: normal;
+    }
+
+    /* 352px = 320px (breakpoint) + 16px (1rem padding) * 2 (on both sides) */
+    @media screen and ( max-width: 352px) {
+      main {
+        padding-inline: var(--space-s);
+      }
+      
+      .card {
+        width: 100%;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+  <main>
+    <article class="card">
+      <span class="star">
+        <img src="images/icon-star.svg" alt="Orange colored star.">
+      </span>
+      <h1 class="question">
+        How did we do?
+      </h1>
+      <p class="question-description">
+        Please let us know how we did with your support request. All
+        feedback is appreciated to help us improve our offering!
+      </p>
+      <fieldset role="radiogroup" class="rating-container">
+        <label for="rating-01" class="rating">1
+          <input type="radio" name="myRating" id="rating-01" value="1"
+            class="visually-hidden" onchange="doStuff(this.parentElement)">
+        </label>
+        <label for="rating-02" class="rating">2
+          <input type="radio" name="myRating" id="rating-02" value="2"
+            class="visually-hidden" onchange="doStuff(this.parentElement)">
+        </label>
+        <label for="rating-03" class="rating">3
+          <input type="radio" name="myRating" id="rating-03" value="3"
+            class="visually-hidden" onchange="doStuff(this.parentElement)">
+        </label>
+        <label for="rating-04" class="rating">4
+          <input type="radio" name="myRating" id="rating-04" value="4"
+            class="visually-hidden" onchange="doStuff(this.parentElement)">
+        </label>
+        <label for="rating-05" class="rating">5
+          <input type="radio" name="myRating" id="rating-05" value="5"
+            class="visually-hidden" onchange="doStuff(this.parentElement)"
+            checked>
+        </label>
+      </fieldset>
+      <button class="submit" disabled>SUBMIT</button>
+    </article>
+  </main>
+
+  <script>
+    const radioBtnContainer = document.querySelector(".rating-container");
+    const submitBtn = document.querySelector("button");
+
+    radioBtnContainer.addEventListener("click", (e) => {
+      if (e.target.tagName !== 'LABEL') return;
+
+
+      const target = e.target;
+      doStuff(target);
+
+    });
+
+    submitBtn.addEventListener("click", (e) => {
+      const checkedValue = document.querySelector("input[name='myRating']:checked").value;
+      const card = e.target.parentElement;
+      
+      const responseTemplate = document.createElement("template");
+
+      responseTemplate.innerHTML = `
+        <img src="images/illustration-thank-you.svg" alt="" class="thank-you-image">
+        <span class="rating-result center">You selected 4 out of 5</span>
+        <span class="question center">Thank you!</span>
+        <p class="question-description center no-bottom-margin">
+          We appreciate you taking the time to give a rating. If you ever need more support, 
+  don’t hesitate to get in touch!</p>
+      `;
+      
+      card.style.visibility = "hidden";
+      card.innerHTML = "";
+      card.append( responseTemplate.content.cloneNode(true) );
+      card.classList.add("extra-padding");
+      card.style.transition = "visibility 0.5s ease-in-out";
+
+      setTimeout(() => {
+        card.style.visibility = "visible";
+      }, 500);
+      
+      
+    })
+
+    function doStuff(target) {
+
+      const submitBtn = document.querySelector(".submit");
+      const parent = target.parentElement;
+
+      for (const element of parent.children) {
+        element.classList.remove("radioButtonChecked");
+      }
+
+      target.children[0].checked = true;
+
+
+      target.classList.add("radioButtonChecked");
+
+      // for (const element of parent.children) {
+      //   console.log(element.children[0].checked);
+      // }
+
+      submitBtn.disabled = false;
+
+    }
+
+
+  </script>
+
+
+
+  <!-- Rating state end -->
+
+
+
+
+
+  <!-- Thank you state start -->
+
+  <!--
+  You selected xxx out of 5
+
+
+  
+
+  -->
+
+  <!-- Thank you state end -->
+
+
+
+</body>
+
+</html>
